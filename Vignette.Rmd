@@ -1,0 +1,226 @@
+---
+title: "hyptest"
+author: "Daianne Starr"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{hyptest}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Intro
+
+If you ever found the principles of statistical inference or hypothesis testing complicated, this pakage is for you. **hyptest** is based on the `infer package` and uses simulation-based approaches to calcualte test statistics and test hypothesis.
+
+## Get started
+
+Please copy and paste, and run this code below in your RStudio. It is an interactive interface that helps the user to shortlist the best function within the hyptest current version.
+
+This code defines a function called **where_to_start()** that interacts with the user to suggest the appropriate statistical inference method based on their needs.
+
+The function asks the user to choose one of three options: (A) Estimate a value, (B) Evaluate a relationship, or (C) Test a hypothesis.
+
+Based on the user's response, the function asks a series of questions to narrow down the appropriate statistical method for the user's situation and provides a recommendation from the **hyptest** package for that method.
+
+```{where_to_start <- function(){}
+  
+  response <- readline("\nWelcome to hyptest! \nLet me help you to figure out what is the best common statistical inference approach to analyze your data.\nFirst, what do you want to do?\n
+A: Estimate a value
+B: Evaluate a relationship
+C: Test a hypothesis\n")
+  
+  # Answers to "Estimate a value" ----------------------------------------------
+  
+  if(toupper(response) == "A"){
+    response_A1 <- readline("\nDo you want...
+A: one value?
+B: the difference between two values?\n")
+    
+    if(toupper(response_A1) == "A"){
+      response_AA <- readline("\nIs it...
+A: a quantitative value? (e.g., height, number of cards, age)
+B: a categorical value? (e.g., marital status, colors, types of fishes)\n")
+      
+      if(toupper(response_AA) == "A"){
+        return(writeLines("If you only have one quantitative response variable (y), you may want to obtain the sample mean. \nIn the hyptest package, the function est_mean() provides you with the sample mean."))}
+      if(toupper(response_AA) == "B"){
+        return(writeLines("\nIf you only have one categorical response variable (y), you may want to obtain the sample proportion. \nIn the hyptest package, the function est_prop() provides you with the sample proportion."))}
+    }
+    
+    if(toupper(response_A1) == "B"){
+      response_AB <- readline("\nAre those...
+A: quantitative values? (e.g., height, number of cards, age)
+B: categorical values? (e.g., marital status, colors, types of fishes)\n")
+      
+      if(toupper(response_AB) == "A"){
+        return(writeLines("\nIf you only have two quantitative response variables (y), you may want to obtain the means difference.\nIn the hyptest package, the function est_diff_means() provides you with the difference in sample means."))}
+      if(toupper(response_AB) == "B"){
+        return(writeLines("\nIf you only have two categorical response variables (y), you may want to obtain the proportions difference. \nIn the hyptest package, function est_diff_props() provides you with the difference in sample proportions."))}
+    }
+  }
+  
+  # Answers to "Examine a relationship" ------------------------------------------
+  
+  if(toupper(response) == "B"){
+    
+    response_B1 <- readline("\nIs your response variable (y)...
+A: quantitative? (e.g., height, number of cards, age)
+B: categorical? (e.g., marital status, colors, types of fishes)\n")
+    
+    if(toupper(response_B1) == "A"){
+      response_BA <- readline("\nDo you want to...
+A: make a prediction?
+B: examine the strength and direction of the relationship?")
+      
+      if(toupper(response_BA) == "A"){
+        return(writeLines("\nIt seems that you are interested in linear regression. \nUnfortunately, this function is not yet available in the hyptest package."))}
+      if(toupper(response_BA) == "B"){
+        return(writeLines("\nIt seems that you are interested in correlation. \nIn the hyptest package, the function est_corr() provides the correlation coefficient."))}
+    }
+    
+    if(toupper(response_B1) == "B"){
+      response_BB <- readline("\nDoes either of the response or explanatory variables has...
+A: two categories?
+B: more than two categories?\n")
+      
+      if(toupper(response_BB) == "A"){
+        return(writeLines("\nIf you only have two categories for either the response (y) or explanatory (x) variables, you may want to obtain the difference in proportions. \nIn the hyptest package, function est_diff_props() provides you with the difference in sample proportions."))}
+      if(toupper(response_BB) == "B"){
+        return(writeLines("\nIf you have more than two categories for either the response (y) or explanatory (x) variables, you may wat to obtain the Chi-Square Test. \nIn the hyptest package, the function est_chi() provides the Chi-Square test statistic."))}
+    }
+    
+  }
+  
+  # Answers to "Test a hypothesis" --------------------------------------------
+  
+  if(toupper(response) == "C"){
+    
+    cat("\nWhich of the scenarios is closest of the hypothesis you want to test?
+A: I want to compare the mean of my sample to the mean of the population.
+B: I want to compare the means between two groups to determine if they are statistically significantly.
+C: I want to compare the means of three or more groups to determine if they are statistically significantly different
+D: I want to compare the proportion of my sample to the proportion on the population
+E: I want to compare the proportions between two groups to determine if they are statistically significantly.
+F: I want to determine the positive or negative linear relationship")
+    
+    response_C1 <- readline()
+    
+    if(toupper(response_C1) == "A"){response_CA <- readline("\nDo you have 30 or more samples?
+A: Yes
+B: No\n")
+    
+    if(toupper(response_CA) == "A"){cat("\nIt seems that you might be interested in either a Standard Normal Test (z-test) or a One Sample Mean Test (t-test). \nIf the sample size is large enough, then the both tests will conclude with the same results.\nIn the hyptest package, the function hyp_mean() provides the One Sample Mean Test.")}
+    
+    if(toupper(response_CA) == "B"){response_CAA <- readline("\nDo you know the sample variance?
+A: Yes
+B: No\n")
+    
+    if(toupper(response_CAA) == "A"){readline("\nIt seems that you are interested in a Standard Normal Test, also known as z-test. \nUnfortunately, the hyptest packages does not provide a function for it yet - please check out later!")}
+    if(toupper(response_CAA) == "B"){readline("\nIt seems that you are interested in One Sample Mean Test, also known as t-test. \nIn the hyptest package, the function hyp_mean() provides the One Sample Mean Test.")}
+    
+    }
+    }
+    
+    if(toupper(response_C1) == "B"){response_CA <- readline("\nDo you have 30 or more samples?
+A: Yes
+B: No")
+    
+    if(toupper(response_CA) == "A"){readline("\nIt seems that you might be interested in a difference in means test. \nUnfortunately, the hyptest packages does not provide a function for it yet - please check out later!")}
+    
+    if(toupper(response_CA) == "B"){readline("\nIt seems that you might be interested in a difference in means test. \nHowever, you need to have at least 30 samples to perform this test. \nUnfortunately, the hyptest packages does not provide a function for it yet - please check out later!")}
+    
+    }
+    
+    if(toupper(response_C1) == "C"){response_CA <- readline("\nAre the observations in each group independent of each other?
+A: Yes
+B: No")
+    
+    if(toupper(response_CA) == "A"){response_CAA <- readline("\n Is the variance of the dependent variables approximately equal across all groups?
+A: Yes
+B: No")
+    
+    if(toupper(response_CAA) == "A"){readline("\nIt seems that you might be interested in a One-Way Analysis of Variance (ANOVA) test. \nUnfortunately, the hyptest packages does not provide a function for it yet - please check out later!")}
+    
+    if(toupper(response_CAA) == "B"){readline("\nIt seems that you might be interested in a Welch One-Way Analysis of Variance (Welch ANOVA) test. \nUnfortunately, the hyptest packages does not provide a function for it yet - please check out later!")}
+    
+    }
+    
+    if(toupper(response_CA) == "B"){response_CAA <- readline("\nIt seems that you might be interested in a One-Way Analysis of Variance (ANOVA) test. \nHowever, the source of dependance has to be removed.  \nUnfortunately, the hyptest packages does not provide a function for it yet - please check out later!")}
+    
+    }
+    
+    if(toupper(response_C1) == "D"){response_CA <- readline("\nDo you have 10 successes and 10 failures in your response variable?
+A: Yes
+B: No")
+    
+    if(toupper(response_CA) == "A"){readline("\nIt seems that you are interested in an One Sample Proportion Test (z-test). \nUnfortunately, the hyptest packages does not provide a function for it yet - please check out later!")}
+    
+    if(toupper(response_CA) == "B"){readline("\nIt seems that you might be interested in an One Sample Proportion Test (z-test). \nHowever, you need to have at least 10 successes and 10 failures in your response variable. \nUnfortunately, the hyptest packages does not provide a function for it yet - please check out later!")}
+    
+    }
+    
+    if(toupper(response_C1) == "E"){response_CA <- readline("\nDo you have 10 successes and 10 failures in your response variable?
+A: Yes
+B: No")
+    
+    if(toupper(response_CA) == "A"){cat("\nIt seems that you are interested in a difference in proportions test. \nUnfortunately, the hyptest packages does not provide a function for it yet - please check out later!")}
+    
+    if(toupper(response_CA) == "B"){cat("\nIt seems that you might be interested in a difference in proportions test. \nHowever, you need to have at least 10 successes and 10 failures in your response variable. \nUnfortunately, the hyptest packages does not provide a function for it yet - please check out later!")}
+    
+    if(toupper(response_C1) == "F"){cat("\nIt seems that you might be interested in the  Pearson's correlation coefficien. \nUnfortunately, the hyptest packages does not provide a function for it yet - please check out later!")}
+    
+    }
+    
+    else{
+      response_error <- return(writeLines("Invalid response."))
+      where_to_start() # Repeat the function to ask for a valid response}
+      
+    }
+  }
+}
+
+where_to_start()
+
+```
+
+## More examples
+
+### Example 1
+
+Let's test another example of the **hyptest** package using a dataset that contains Divorce rate and margarine consumption data!
+
+```{R}
+library(tidyverse)
+library(dslabs)
+
+glimpse(divorce_margarine)
+```
+
+I want to obtain the 95% confidence interval for the correlation between the divorce rate and margarine consumption and save the result as png.
+
+```{r fig.dim = c(7, 5)}
+library(hyptest)
+
+est_corr(divorce_margarine, margarine_consumption_per_capita, divorce_rate_maine, cil = 0.95, bin_num = 40, save_as = "png")
+
+```
+
+### Example 2
+
+Examining the dataset about Italian olives, what is the proportion of olives produced in Southern Italy in this study?
+
+```{r}
+glimpse(olive)
+```
+
+I want to obtain the 99% confidence interval for the proportion of olives produced in Southern Italy and save the result as pdf.
+
+```{r fig.dim = c(7, 5)}
+est_prop(olive, region, "Southern Italy", cil = 0.99, bin_num = 30, save_as = "pdf")
+```
+
+```{r}
+library(palmerpenguins)
+
+```

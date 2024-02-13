@@ -1,0 +1,20 @@
+Package: hyptest
+Type: Package
+Title: This package conducts randomization-based statistical inference and hypothesis testing
+Version: 0.1.0
+Author: Daianne Starr
+Maintainer: The package maintainer <daiannestarr@gmail.com>
+Description: Here we are able to obtain the test statistic and the confidence interval that captures the true population parameter. These function relies in a randomization-based estimation. Firstly, it constructs a bootstrap distribution in order to approximate the standard error of statistic of interest. Then, it computes a confidence interval for the population parameter.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Depends: 
+    R (>= 2.10)
+RoxygenNote: 7.2.3.9000
+Imports: 
+    dplyr,
+    geomtextpath,
+    ggplot2,
+    infer,
+    viridis
+Roxygen: list(markdown = TRUE)
